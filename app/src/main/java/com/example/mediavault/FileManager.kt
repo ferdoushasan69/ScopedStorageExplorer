@@ -224,8 +224,7 @@ class FileManager(private val context: Context, private var uri: Uri? = null) {
             list.addAll(it)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (uri != null){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && uri != null) {
 
             DocumentFile.fromTreeUri(context, uri!!)?.listFiles()?.filter { it.isFile }?.map {
                 val fileNameFromDocumentFile = it.name
@@ -241,29 +240,7 @@ class FileManager(private val context: Context, private var uri: Uri? = null) {
             }?.let {
                 list.addAll(it)
             }
-            }else{
-                val projection = arrayOf(MediaStore.MediaColumns.DISPLAY_NAME, MediaStore.MediaColumns._ID)
-                val selection = MediaStore.MediaColumns.RELATIVE_PATH + " = ?"
-                val selectionArgs = arrayOf(Environment.DIRECTORY_DOWNLOADS.plus("/$DIRECTORY"))
-                val queryUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
 
-                context.contentResolver.query(queryUri,projection,selection,selectionArgs,null)?.use {cursor->
-                    val nameColumn = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
-                    val idColumn = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
-                    while (cursor.moveToNext()){
-                        val fileName = cursor.getString(nameColumn)
-                        val fileId = cursor.getLong(idColumn)
-
-                        val fileUri = ContentUris.withAppendedId(queryUri,fileId)
-
-                        context.contentResolver.openInputStream(fileUri)?.bufferedReader()?.use {bufferReader->
-                            val content = bufferReader.readText()
-                            list.add(Summary(fileName,content, Type.SHARED))
-
-                        }
-                    }
-                }
-            }
         } else {
             val directory =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS.plus("/$DIRECTORY"))

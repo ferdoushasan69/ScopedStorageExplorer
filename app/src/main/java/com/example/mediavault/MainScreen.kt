@@ -1,9 +1,12 @@
 package com.example.mediavault
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -80,8 +83,8 @@ fun MainScreen(fileManager: FileManager) {
 
     val permission = rememberMultiplePermissionsState(
         permissions = listOf(
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
 
             ),
     )
@@ -89,18 +92,20 @@ fun MainScreen(fileManager: FileManager) {
 
     val activityResult = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) {
-        it.data?.data?.let { folderUri ->
-            context.contentResolver.takePersistableUriPermission(
-                folderUri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-            )
-            fileManager.setUri(folderUri)
-        }
+    ) {result->
+            result.data?.data?.let { folderUri ->
+                context.contentResolver.takePersistableUriPermission(
+                    folderUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+                fileManager.setUri(folderUri)
+
+            }
+
     }
 
-    LaunchedEffect(Unit) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    LaunchedEffect(key1 = Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).apply {
                 flags =
                     Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
