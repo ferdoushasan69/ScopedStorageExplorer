@@ -28,7 +28,8 @@ An Android application designed to demonstrate and manage text summaries using v
 
 ## How to Run:
 
-1.  Clone this repository: `git clone https://github.com/YourUsername/MediaVaultApp.git`
+
+1.  Clone this repository: `https://github.com/ferdoushasan69/ScopedStorageExplorer.git`
 2.  Open the project in Android Studio.
 3.  Build and run on an Android emulator or physical device (API 23+ recommended for full testing of all storage types, specifically API 29+ for Scoped Storage testing).
 
@@ -41,3 +42,5 @@ This app requests the following permissions:
 For Android 10 (API 29) and above, the app leverages Scoped Storage. For shared storage, it either utilizes `ACTION_OPEN_DOCUMENT_TREE` (to allow user selection of a directory) or interacts directly with the `Downloads` directory via `MediaStore`.
 
 ---
+<img src="https://github.com/user-attachments/assets/86dfe904-09d8-4801-b3e4-bb3395b33318" width="40%" />
+
